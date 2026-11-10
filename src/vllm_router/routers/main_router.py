@@ -27,7 +27,7 @@ from vllm_router.service_discovery import get_service_discovery
 from vllm_router.services.request_service.request import (
     route_general_request,
     route_general_transcriptions,
-    route_image_edit_request,
+    route_multipart_request,
     route_sleep_wakeup_request,
 )
 from vllm_router.stats.engine_stats import get_engine_stats_scraper
@@ -75,6 +75,11 @@ async def route_embeddings(request: Request, background_tasks: BackgroundTasks):
     return await route_general_request(request, "/v1/embeddings", background_tasks)
 
 
+@main_router.post("/pooling")
+async def route_pooling(request: Request, background_tasks: BackgroundTasks):
+    return await route_general_request(request, "/pooling", background_tasks)
+
+
 @main_router.post("/tokenize")
 async def route_tokenize(request: Request, background_tasks: BackgroundTasks):
     return await route_general_request(request, "/tokenize", background_tasks)
@@ -103,6 +108,16 @@ async def route_v1_score(request: Request, background_tasks: BackgroundTasks):
 @main_router.post("/score")
 async def route_score(request: Request, background_tasks: BackgroundTasks):
     return await route_general_request(request, "/score", background_tasks)
+
+
+@main_router.post("/v1/systemone")
+async def route_v1_systemone(request: Request, background_tasks: BackgroundTasks):
+    return await route_general_request(request, "/v1/systemone", background_tasks)
+
+
+@main_router.post("/v1/decisions")
+async def route_v1_decisions(request: Request, background_tasks: BackgroundTasks):
+    return await route_general_request(request, "/v1/decisions", background_tasks)
 
 
 @main_router.post("/sleep")
@@ -271,7 +286,7 @@ async def route_v1_audio_speech(request: Request, background_tasks: BackgroundTa
 async def route_v1_audio_translations(
     request: Request, background_tasks: BackgroundTasks
 ):
-    return await route_general_request(
+    return await route_multipart_request(
         request, "/v1/audio/translations", background_tasks
     )
 
@@ -292,7 +307,7 @@ async def route_v1_images_generations(
 
 @main_router.post("/v1/images/edits")
 async def route_v1_images_edit(request: Request, background_tasks: BackgroundTasks):
-    return await route_image_edit_request(request, "/v1/images/edits", background_tasks)
+    return await route_multipart_request(request, "/v1/images/edits", background_tasks)
 
 
 @main_router.post("/v1/messages")
